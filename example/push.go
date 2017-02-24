@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"errors"
+	"strconv"
 	"github.com/synw/terr"
 )
 
@@ -11,10 +12,12 @@ import (
 func doWork() *terr.Trace {
 	trace := &terr.Trace{}
 	for i := 1;  i<=10; i++ {
-		fmt.Println("Work being done")
+		tick := strconv.Itoa(i)
+		fmt.Println("Work being done: tick", tick)
 		if i == 2 || i == 5 {
 			err := errors.New("Error")
-			trace = terr.Push("doWork", err, trace)
+			from := "doWork: tick "+tick
+			trace = terr.Push(from, err, trace)
 		}
 		time.Sleep(1*time.Second)
 	}
