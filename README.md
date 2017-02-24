@@ -45,7 +45,7 @@ return trace
 Continue tracing:
 
    ```go
-// trace is the previous returned *Trace
+// trace is the previous returned *terr.Trace
 terr.New("function_path", err, trace)
    ```
 
