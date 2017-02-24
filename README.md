@@ -36,7 +36,7 @@ func main() {
 Start tracing errors:
 
    ```go
-// terr(from string, terr error)
+// terr.New(from string, err error)
 trace := terr.New("function_path", err)
 return trace
 //return a *terr.Trace instead of an error
