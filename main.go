@@ -2,6 +2,7 @@ package terr
 
 import (
 	"fmt"
+	"runtime"
 	"github.com/acmacalister/skittles"
 )
 
@@ -69,6 +70,17 @@ func Push(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, ""}
 	t := newFromErr(terr, from, err, previous_traces...)
 	fmt.Println(terr.Format())
+	return t
+}
+
+func Stack(from string, err error, previous_traces ...*Trace) *Trace {
+	terr := &Terr{from, err, ""}
+	t := newFromErr(terr, from, err, previous_traces...)
+	fmt.Println(terr.Format())
+	var stack [4096]byte
+	runtime.Stack(stack[:], false)
+	fmt.Println(terr.Format())
+	fmt.Printf("%s\n", stack[:])
 	return t
 }
 

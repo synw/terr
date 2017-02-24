@@ -61,6 +61,8 @@ Print the errors as they come:
 
    ```go
 terr.Push("function_path", err, previous_trace)
+// print the go stack trace as well
+terr.Stack("function_path", err, previous_trace)
    ```
 
 ## Formating
