@@ -25,7 +25,7 @@ func (e Terr) Format(args ...string) string {
 	} else if e.Level == "debug" {
 		level = "["+skittles.Yellow("debug")+"]"
 	} else if e.Level == "important" {
-		level = "["+skittles.BoldCyan("important")+"]"
+		level = "["+skittles.BoldGreen("important")+"]"
 	}
 	var msg string
 	if e.Error != nil {
