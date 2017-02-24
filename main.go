@@ -65,6 +65,12 @@ func (e Trace) Print(sep ...string) {
 	fmt.Println(e.Format(sep...))
 }
 
+func (e Trace) PrintF(sep ...string) {
+	fmt.Println("-------------- TRACE --------------")
+	fmt.Println(e.Format(sep...))
+	fmt.Println("-----------------------------------")
+}
+
 func New(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, ""}
 	t := newFromErr(terr, from, err, previous_traces...)

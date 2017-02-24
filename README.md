@@ -74,6 +74,8 @@ Custom formating:
 trace.Print("->", "\n")
 // get the trace output without printing
 formated_trace := trace.Format()
+// with separators
+trace.PrintF()
    ```
    
 Check the [examples](https://github.com/synw/terr/tree/master/example)
