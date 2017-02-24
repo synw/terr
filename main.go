@@ -65,6 +65,13 @@ func New(from string, err error, previous_traces ...*Trace) *Trace {
 	return t
 }
 
+func Push(from string, err error, previous_traces ...*Trace) *Trace {
+	terr := &Terr{from, err, ""}
+	t := newFromErr(terr, from, err, previous_traces...)
+	fmt.Println(terr.Format())
+	return t
+}
+
 func Critical(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, "critical"}
 	t := newFromErr(terr, from, err, previous_traces...)

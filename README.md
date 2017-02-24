@@ -39,7 +39,7 @@ Start tracing errors:
 // terr(from string, terr error)
 trace := terr.New("function_path", err)
 return trace
-//return a *Trace instead of an error
+//return a *terr.Trace instead of an error
    ```
 
 Continue tracing:
@@ -56,10 +56,18 @@ terr.Critical("function_path", err)
 terr.Minor("function_path", err)
 terr.Debug("function_path", err)
    ```
+   
+Print the errors as they come:
+
+   ```go
+terr.Push("function_path", err, previous_trace)
+   ```
+
+## Formating
 
 Custom formating:
    ```go
-// trace is a *Trace
+// trace is a *terr.Trace
 // trace.Print(prefix, suffix) or trace.Print(prefix)
 trace.Print("->", "\n")
 // get the trace output without printing
