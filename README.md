@@ -73,3 +73,5 @@ trace.Print("->", "\n")
 // get the trace output without printing
 formated_trace := trace.Format()
    ```
+   
+Check the [examples](https://github.com/synw/terr/tree/master/example)
