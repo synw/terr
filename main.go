@@ -27,7 +27,10 @@ func (e Terr) Format(args ...string) string {
 	} else if e.Level == "important" {
 		level = "["+skittles.BoldCyan("important")+"]"
 	}
-	msg := prefix+e.Error.Error()
+	var msg string
+	if e.Error != nil {
+		msg = prefix+e.Error.Error()
+	}
 	msg = msg+" ("+e.From+")"
 	msg = level+" "+msg+" "
 	return msg
