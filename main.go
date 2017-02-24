@@ -24,6 +24,8 @@ func (e Terr) Format(args ...string) string {
 		level = "[minor error]"
 	} else if e.Level == "debug" {
 		level = "["+skittles.Yellow("debug")+"]"
+	} else if e.Level == "important" {
+		level = "["+skittles.BoldCyan("important")+"]"
 	}
 	msg := prefix+e.Error.Error()
 	msg = msg+" ("+e.From+")"
@@ -86,6 +88,12 @@ func Stack(from string, err error, previous_traces ...*Trace) *Trace {
 
 func Critical(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, "critical"}
+	t := newFromErr(terr, from, err, previous_traces...)
+	return t
+}
+
+func Important(from string, err error, previous_traces ...*Trace) *Trace {
+	terr := &Terr{from, err, "important"}
 	t := newFromErr(terr, from, err, previous_traces...)
 	return t
 }
