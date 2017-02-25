@@ -103,7 +103,9 @@ func (trace Trace) Errs() []error {
 	if len(trace.Errors) > 0 {
 		for _, er := range(trace.Errors) {
 			if er != nil {
-				errs = append(errs, er.Error)
+				if er.Error != nil {
+					errs = append(errs, er.Error)
+				}
 			}
 		}
 	}
@@ -115,7 +117,9 @@ func (trace Trace) Err() error {
 	if len(trace.Errors) > 0 {
 		for _, er := range(trace.Errors) {
 			if er != nil {
-				err_str = err_str+er.Error.Error()
+				if er.Error != nil {
+					err_str = err_str+er.Error.Error()
+				}
 			}
 		}
 	}
