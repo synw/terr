@@ -113,14 +113,14 @@ func (e Trace) Printl(sep ...string) {
 	fmt.Println(e.Formatl(sep...))
 }
 
-func (e Trace) Print(sep ...string) {
-	fmt.Println(e.Format(sep...))
-}
-
 func (e Trace) Printf(from string) {
 	fmt.Println("-------------- errors ("+from+") --------------")
 	fmt.Println(e.Format())
 	//fmt.Println("---------------------------------------------")
+}
+
+func (e Trace) Print(sep ...string) {
+	fmt.Println(e.Format(sep...))
 }
 
 func (trace Trace) Errs() []error {
@@ -170,7 +170,6 @@ func Pass(from string, previous_traces ...*Trace) *Trace {
 
 func Push(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, ""}
-	fmt.Println("PUSH")
 	t := newFromErr(terr, from, err, previous_traces...)
 	fmt.Println(terr.Formatl())
 	return t
