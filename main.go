@@ -2,6 +2,8 @@ package terr
 
 import (
 	"fmt"
+	"errors"
+	"os"
 	"runtime"
 	"github.com/acmacalister/skittles"
 )
@@ -12,7 +14,7 @@ type Terr struct {
 	Level string
 }
 
-func (e Terr) Format(args ...string) string {
+func (e Terr) FormatLabels(args ...string) string {
 	prefix := ""
 	if len(args) == 1 {
 		prefix = args[0]
@@ -33,6 +35,19 @@ func (e Terr) Format(args ...string) string {
 	}
 	msg = msg+" ("+e.From+")"
 	msg = level+" "+msg+" "
+	return msg
+}
+
+func (e Terr) Format(args ...string) string {
+	prefix := ""
+	if len(args) == 1 {
+		prefix = args[0]
+	}
+	var msg string
+	if e.Error != nil {
+		msg = prefix+e.Error.Error()
+	}
+	msg = msg+" ("+e.From+")"
 	return msg
 }
 
@@ -69,6 +84,23 @@ func (e Trace) Printf(sep ...string) {
 	fmt.Println("-------------- TRACE --------------")
 	fmt.Println(e.Format(sep...))
 	fmt.Println("-----------------------------------")
+}
+
+func (trace Trace) Errs() []error {
+	var errs []error
+	for _, terr := range(trace.Errors) {
+		errs = append(errs, terr.Error)
+	}
+	return errs
+}
+
+func (trace Trace) Err() error {
+	var err string
+	for _, terr := range(trace.Errors) {
+		err = err+terr.Error.Error()
+	}
+	e := errors.New(err)
+	return e
 }
 
 func New(from string, err error) *Trace {
@@ -109,6 +141,13 @@ func Stack(from string, err error, previous_traces ...*Trace) *Trace {
 	return t
 }
 
+func Fatal(from string, trace *Trace) {
+	msg := "From "+skittles.BoldWhite(from)
+	fmt.Println(msg)
+	fmt.Println(trace.Format())
+	os.Exit(1)
+}
+
 func Critical(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, "critical"}
 	t := newFromErr(terr, from, err, previous_traces...)
@@ -137,8 +176,12 @@ func newFromErr(terr *Terr, from string, err error, previous_traces ...*Trace) *
 	var new_errors []*Terr
 	new_errors = append(new_errors, terr)
 	if len(previous_traces) > 0 {
-		for _, e := range(previous_traces[0].Errors) {
-			new_errors = append(new_errors, e)
+		for _, trace := range(previous_traces) {
+			if len(trace.Errors) > 0 {
+				for _, err := range(trace.Errors) {
+					new_errors = append(new_errors, err)
+				}
+			}
 		}
 	}
 	new_trace := &Trace{new_errors}
