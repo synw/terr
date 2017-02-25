@@ -71,7 +71,21 @@ func (e Trace) Printf(sep ...string) {
 	fmt.Println("-----------------------------------")
 }
 
-func New(from string, err error, previous_traces ...*Trace) *Trace {
+func New(from string, err error) *Trace {
+	terr := &Terr{from, err, ""}
+	var prev *Trace
+	t := newFromErr(terr, from, err, prev)
+	return t
+}
+
+func Add(from string, err error, previous_traces ...*Trace) *Trace {
+	terr := &Terr{from, err, ""}
+	t := newFromErr(terr, from, err, previous_traces...)
+	return t
+}
+
+func Pass(from string, previous_traces ...*Trace) *Trace {
+	var err error
 	terr := &Terr{from, err, ""}
 	t := newFromErr(terr, from, err, previous_traces...)
 	return t

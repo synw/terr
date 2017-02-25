@@ -46,7 +46,9 @@ Continue tracing:
 
    ```go
 // trace is the previous returned *terr.Trace
-terr.New("function_path", err, trace)
+terr.Add("function_path", err, trace)
+// pass the trace without adding a new error
+terr.Pass("function_path", trace)
    ```
 
 ## Options
