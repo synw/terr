@@ -65,7 +65,7 @@ func (e Trace) Print(sep ...string) {
 	fmt.Println(e.Format(sep...))
 }
 
-func (e Trace) PrintF(sep ...string) {
+func (e Trace) Printf(sep ...string) {
 	fmt.Println("-------------- TRACE --------------")
 	fmt.Println(e.Format(sep...))
 	fmt.Println("-----------------------------------")
