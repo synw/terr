@@ -17,8 +17,11 @@ type Terr struct {
 
 func (e Terr) Format(args ...string) string {
 	prefix := ""
-	if len(args) == 1 {
+	emphasis := "false"
+	if len(args) > 0 {
 		prefix = args[0]
+	} else if len(args) == 2 {
+		emphasis = args[1]
 	}
 	var msg string
 	sep := " "
@@ -27,7 +30,11 @@ func (e Terr) Format(args ...string) string {
 	} else {
 		sep = ""
 	}
-	msg = msg+sep+"("+e.From+")"
+	from := e.From
+	if (emphasis == "true") {
+		from = skittles.BoldWhite(from)
+	}
+	msg = from+sep+msg
 	return msg
 }
 
@@ -62,7 +69,11 @@ func (trace Trace) Formatl() string {
 	errs := reverse(trace.Errors)
 	for i, er := range(errs) {
 		label := getLabelWithNum(er, i)
-		msg = msg+label+" "+er.Format()
+		emphasis := "false"
+		if i < 1 {
+			emphasis = "true"
+		}
+		msg = msg+label+" "+er.Format("", "\n", emphasis)
 		if (i+1) < len(errs) {
 			msg = msg+"\n"
 		}
