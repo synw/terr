@@ -14,7 +14,7 @@ type Terr struct {
 	Level string
 }
 
-func (e Terr) FormatLabels(args ...string) string {
+func (e Terr) Formatl(args ...string) string {
 	prefix := ""
 	if len(args) == 1 {
 		prefix = args[0]
@@ -76,30 +76,75 @@ func (trace Trace) Format(args ...string) string {
 	return msg
 }
 
+func (trace Trace) Formatl(args ...string) string {
+	prefix := ""
+	suffix := "\n"
+	num_args := len(args)
+	if num_args == 1 {
+		prefix = args[0]
+	} else if num_args == 2 {
+		prefix = args[0]
+		suffix = args[1]
+	}
+	var msg string
+	errs := reverse(trace.Errors)
+	for i, terr := range(errs) {
+		msg = msg+terr.Formatl(prefix)
+		if (i+1) < len(errs) {
+			msg = msg+suffix
+		}
+	}
+	return msg
+}
+
+func (e Trace) Printp(prefix string) {
+	fmt.Println(e.Format(prefix, ""))
+}
+
+func (e Trace) Prints(suffix string) {
+	fmt.Println(e.Format("", suffix))
+}
+
+func (e Trace) Printps(suffix string, prefix string) {
+	fmt.Println(e.Format(prefix, suffix))
+}
+
+func (e Trace) Printl(sep ...string) {
+	fmt.Println(e.Formatl(sep...))
+}
+
 func (e Trace) Print(sep ...string) {
 	fmt.Println(e.Format(sep...))
 }
 
-func (e Trace) Printf(sep ...string) {
-	fmt.Println("-------------- TRACE --------------")
-	fmt.Println(e.Format(sep...))
-	fmt.Println("-----------------------------------")
+func (e Trace) Printf(from string) {
+	fmt.Println("-------------- errors ("+from+") --------------")
+	fmt.Println(e.Format())
+	//fmt.Println("---------------------------------------------")
 }
 
 func (trace Trace) Errs() []error {
 	var errs []error
-	for _, terr := range(trace.Errors) {
-		errs = append(errs, terr.Error)
+	if len(trace.Errors) > 0 {
+		for _, er := range(trace.Errors) {
+			if er != nil {
+				errs = append(errs, er.Error)
+			}
+		}
 	}
 	return errs
 }
 
 func (trace Trace) Err() error {
-	var err string
-	for _, terr := range(trace.Errors) {
-		err = err+terr.Error.Error()
+	var err_str string
+	if len(trace.Errors) > 0 {
+		for _, er := range(trace.Errors) {
+			if er != nil {
+				err_str = err_str+er.Error.Error()
+			}
+		}
 	}
-	e := errors.New(err)
+	e := errors.New(err_str)
 	return e
 }
 
@@ -125,8 +170,9 @@ func Pass(from string, previous_traces ...*Trace) *Trace {
 
 func Push(from string, err error, previous_traces ...*Trace) *Trace {
 	terr := &Terr{from, err, ""}
+	fmt.Println("PUSH")
 	t := newFromErr(terr, from, err, previous_traces...)
-	fmt.Println(terr.Format())
+	fmt.Println(terr.Formatl())
 	return t
 }
 
@@ -177,9 +223,11 @@ func newFromErr(terr *Terr, from string, err error, previous_traces ...*Trace) *
 	new_errors = append(new_errors, terr)
 	if len(previous_traces) > 0 {
 		for _, trace := range(previous_traces) {
-			if len(trace.Errors) > 0 {
-				for _, err := range(trace.Errors) {
-					new_errors = append(new_errors, err)
+			if trace != nil {
+				if len(trace.Errors) > 0 {
+					for _, err := range(trace.Errors) {
+						new_errors = append(new_errors, err)
+					}
 				}
 			}
 		}
