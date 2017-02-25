@@ -57,23 +57,14 @@ func (trace Trace) Format(args ...string) string {
 	return msg
 }
 
-func (trace Trace) Formatl(args ...string) string {
-	prefix := ""
-	suffix := "\n"
-	num_args := len(args)
-	if num_args == 1 {
-		prefix = args[0]
-	} else if num_args == 2 {
-		prefix = args[0]
-		suffix = args[1]
-	}
+func (trace Trace) Formatl() string {
 	var msg string
 	errs := reverse(trace.Errors)
 	for i, er := range(errs) {
 		label := getLabelWithNum(er, i)
-		msg = msg+label+" "+er.Format(prefix)
+		msg = msg+label+" "+er.Format()
 		if (i+1) < len(errs) {
-			msg = msg+suffix
+			msg = msg+"\n"
 		}
 	}
 	return msg
@@ -91,8 +82,9 @@ func (e Trace) Printps(suffix string, prefix string) {
 	fmt.Println(e.Format(prefix, suffix))
 }
 
-func (e Trace) Printl(sep ...string) {
-	fmt.Println(e.Formatl(sep...))
+func (e Trace) Printl(from string) {
+	fmt.Println("-------------- errors ("+from+") --------------")
+	fmt.Println(e.Formatl())
 }
 
 func (e Trace) Printf(from string) {
@@ -101,8 +93,9 @@ func (e Trace) Printf(from string) {
 	//fmt.Println("---------------------------------------------")
 }
 
-func (e Trace) Print(sep ...string) {
-	fmt.Println(e.Format(sep...))
+func (e Trace) Print(from string) {
+	fmt.Println("-------------- errors ("+from+") --------------")
+	fmt.Println(e.Format())
 }
 
 func (trace Trace) Errs() []error {
