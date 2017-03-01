@@ -105,7 +105,6 @@ func (e Trace) Printf(from string) {
 }
 
 func (e Trace) Print(from string) {
-	fmt.Println("-------------- errors ("+from+") --------------")
 	fmt.Println(e.Format())
 }
 
@@ -136,6 +135,11 @@ func (trace Trace) Err() error {
 	}
 	e := errors.New(err_str)
 	return e
+}
+
+func (trace Trace) Error() string {
+	ft := trace.Format()
+	return ft
 }
 
 func New(from string, err error) *Trace {
