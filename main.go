@@ -93,19 +93,19 @@ func (e Trace) Printps(suffix string, prefix string) {
 	fmt.Println(e.Format(prefix, suffix))
 }
 
-func (e Trace) Printl(from string) {
-	fmt.Println("-------------- errors ("+from+") --------------")
-	fmt.Println(e.Formatl())
-}
-
 func (e Trace) Printf(from string) {
 	fmt.Println("-------------- errors ("+from+") --------------")
 	fmt.Println(e.Format())
-	//fmt.Println("---------------------------------------------")
 }
 
-func (e Trace) Print(from string) {
+func (e Trace) Print() {
+	fmt.Println("-------------- errors --------------")	
 	fmt.Println(e.Format())
+}
+
+func (e Trace) Printc() {
+	fmt.Println("-------------- errors --------------")	
+	fmt.Println(e.Formatl())
 }
 
 func (trace Trace) Errs() []error {

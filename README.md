@@ -72,8 +72,11 @@ terr.Stack("function_path", err, previous_trace)
 Custom formating:
    ```go
 // trace is a *terr.Trace
-// trace.Print(prefix, suffix) or trace.Print(prefix)
-trace.Print("->", "\n")
+trace.Print()
+// with colors
+trace.Printc()
+// with prefix and suffix trace.Printps(prefix, suffix)
+trace.Printps("->", "\n")
 // get the trace output without printing
 formated_trace := trace.Format()
 // with error class labels
