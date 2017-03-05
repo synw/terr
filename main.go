@@ -187,30 +187,6 @@ func Fatal(from string, trace *Trace) {
 	os.Exit(1)
 }
 
-func Critical(from string, err error, previous_traces ...*Trace) *Trace {
-	er := &Terr{from, err, "critical"}
-	t := newFromErr(er, from, err, previous_traces...)
-	return t
-}
-
-func Important(from string, err error, previous_traces ...*Trace) *Trace {
-	er := &Terr{from, err, "important"}
-	t := newFromErr(er, from, err, previous_traces...)
-	return t
-}
-
-func Minor(from string, err error, previous_traces ...*Trace) *Trace {
-	er := &Terr{from, err, "minor"}
-	t := newFromErr(er, from, err, previous_traces...)
-	return t
-}
-
-func Debug(from string, err error, previous_traces ...*Trace) *Trace {
-	er := &Terr{from, err, "debug"}
-	t := newFromErr(er, from, err, previous_traces...)
-	return t
-}
-
 func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Trace {
 	var new_errors []*Terr
 	new_errors = append(new_errors, er)
