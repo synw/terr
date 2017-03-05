@@ -108,21 +108,7 @@ func (e Trace) Printc() {
 	fmt.Println(e.Formatc())
 }
 
-func (trace Trace) Errs() []error {
-	var errs []error
-	if len(trace.Errors) > 0 {
-		for _, er := range(trace.Errors) {
-			if er != nil {
-				if er.Error != nil {
-					errs = append(errs, er.Error)
-				}
-			}
-		}
-	}
-	return errs
-}
-
-func (trace Trace) Err() error {
+func (trace Trace) ToErr() error {
 	var err_str string
 	if len(trace.Errors) > 0 {
 		for _, er := range(trace.Errors) {
@@ -187,6 +173,18 @@ func Fatal(from string, trace *Trace) {
 	os.Exit(1)
 }
 
+func Ok(msg string) string {
+	msg = "["+skittles.Green("ok")+"] "+msg
+	return msg
+}
+
+func Err(msg string) string {
+	msg = "["+skittles.BoldRed("error")+"] "+msg
+	return msg
+}
+
+// internal methods
+
 func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Trace {
 	var new_errors []*Terr
 	new_errors = append(new_errors, er)
@@ -203,11 +201,6 @@ func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Tr
 	}
 	new_trace := &Trace{new_errors}
 	return new_trace
-}
-
-func Ok(msg string) string {
-	msg = "["+skittles.Green("ok")+"] "+msg
-	return msg
 }
 
 func reverse(array []*Terr) []*Terr {
