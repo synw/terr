@@ -64,7 +64,7 @@ func (trace Trace) Format(args ...string) string {
 	return msg
 }
 
-func (trace Trace) Formatl() string {
+func (trace Trace) Formatc() string {
 	var msg string
 	errs := reverse(trace.Errors)
 	for i, er := range(errs) {
@@ -105,7 +105,7 @@ func (e Trace) Print() {
 
 func (e Trace) Printc() {
 	fmt.Println("-------------- errors --------------")	
-	fmt.Println(e.Formatl())
+	fmt.Println(e.Formatc())
 }
 
 func (trace Trace) Errs() []error {
@@ -203,6 +203,11 @@ func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Tr
 	}
 	new_trace := &Trace{new_errors}
 	return new_trace
+}
+
+func Ok(msg string) string {
+	msg = "["+skittles.Green("ok")+"] "+msg
+	return msg
 }
 
 func reverse(array []*Terr) []*Terr {
