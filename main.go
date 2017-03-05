@@ -178,9 +178,10 @@ func Ok(msg string) string {
 	return msg
 }
 
-func Err(msg string) string {
+func Err(msg string) error {
 	msg = "["+skittles.BoldRed("error")+"] "+msg
-	return msg
+	err := errors.New(msg)
+	return err
 }
 
 // internal methods
