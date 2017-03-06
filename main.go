@@ -182,7 +182,7 @@ func Ok(msg string) string {
 func Debug(msg string, objs ...interface{}) {
 	msg = "["+skittles.Yellow("debug")+"] "+msg
 	fmt.Println(msg)
-	for o := range(objs) {
+	for _, o := range(objs) {
 		fmt.Println(fmt.Sprintf("%T %#v", o, o))		
 	}
 }
