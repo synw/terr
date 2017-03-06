@@ -129,6 +129,7 @@ func (trace Trace) Error() string {
 }
 
 func New(from string, err error) *Trace {
+	from = skittles.BoldWhite(from)
 	er := &Terr{from, err, ""}
 	var prev *Trace
 	t := newFromErr(er, from, err, prev)
