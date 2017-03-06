@@ -179,9 +179,19 @@ func Ok(msg string) string {
 	return msg
 }
 
-func Debug(msg string, objs ...interface{}) {
-	msg = "["+skittles.Yellow("debug")+"] "+msg
-	fmt.Println(msg)
+func Debug(args ...interface{}) {
+	num_args := len(args)
+	if num_args < 1  {
+		return
+	}
+	t := fmt.Sprintf("%T", args[0])
+	objs := args
+	if t == "string" {
+		msg := "["+skittles.Yellow("debug")+"] "+args[0].(string)
+		fmt.Println(msg)
+	} else {
+		objs = args[1:]
+	}
 	for _, o := range(objs) {
 		fmt.Println(fmt.Sprintf("%T %#v", o, o))		
 	}
