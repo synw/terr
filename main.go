@@ -179,6 +179,11 @@ func Ok(msg string) string {
 	return msg
 }
 
+func Debug(msg string, objs ...interface{}) {
+	msg = "["+skittles.Yellow("debug")+"] "+msg
+	fmt.Println(msg, fmt.Sprintf("%s", objs))
+}
+
 func Err(msg string) error {
 	msg = "["+skittles.BoldRed("error")+"] "+msg
 	err := errors.New(msg)
