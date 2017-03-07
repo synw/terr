@@ -168,9 +168,9 @@ func Stack(from string, err error, previous_traces ...*Trace) *Trace {
 }
 
 func Fatal(from string, trace *Trace) {
-	msg := "From "+skittles.BoldWhite(from)
+	msg := skittles.BoldRed("Fatal error")+" from "+skittles.BoldWhite(from)
 	fmt.Println(msg)
-	fmt.Println(trace.Format())
+	trace.Printc()
 	os.Exit(1)
 }
 
