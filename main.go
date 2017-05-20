@@ -1,16 +1,16 @@
 package terr
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
+	"github.com/acmacalister/skittles"
 	"os"
 	"runtime"
 	"strconv"
-	"github.com/acmacalister/skittles"
 )
 
 type Terr struct {
-	From string
+	From  string
 	Error error
 	Level string
 }
@@ -26,15 +26,15 @@ func (e Terr) Format(args ...string) string {
 	var msg string
 	sep := " "
 	if e.Error != nil {
-		msg = prefix+e.Error.Error()
+		msg = prefix + e.Error.Error()
 	} else {
 		sep = ""
 	}
 	from := e.From
-	if (emphasis == "true") {
+	if emphasis == "true" {
 		from = skittles.BoldWhite(from)
 	}
-	msg = from+sep+msg
+	msg = from + sep + msg
 	return msg
 }
 
@@ -54,11 +54,11 @@ func (trace Trace) Format(args ...string) string {
 	}
 	var msg string
 	errs := reverse(trace.Errors)
-	for i, er := range(errs) {
+	for i, er := range errs {
 		s := strconv.Itoa(i)
-		msg = msg+s+" "+er.Format(prefix)
-		if (i+1) < len(errs) {
-			msg = msg+suffix
+		msg = msg + s + " " + er.Format(prefix)
+		if (i + 1) < len(errs) {
+			msg = msg + suffix
 		}
 	}
 	return msg
@@ -67,15 +67,15 @@ func (trace Trace) Format(args ...string) string {
 func (trace Trace) Formatc() string {
 	var msg string
 	errs := reverse(trace.Errors)
-	for i, er := range(errs) {
+	for i, er := range errs {
 		label := getLabelWithNum(er, i)
 		emphasis := "false"
 		if i < 1 {
 			emphasis = "true"
 		}
-		msg = msg+label+" "+er.Format("", "\n", emphasis)
-		if (i+1) < len(errs) {
-			msg = msg+"\n"
+		msg = msg + label + " " + er.Format("", "\n", emphasis)
+		if (i + 1) < len(errs) {
+			msg = msg + "\n"
 		}
 	}
 	return msg
@@ -94,27 +94,27 @@ func (e Trace) Printps(suffix string, prefix string) {
 }
 
 func (e Trace) Printf(from string) {
-	fmt.Println("-------------- errors ("+from+") --------------")
+	fmt.Println("-------------- Trace (" + from + ") --------------")
 	fmt.Println(e.Format())
 }
 
 func (e Trace) Print() {
-	fmt.Println("-------------- errors --------------")	
+	fmt.Println("-------------- Trace --------------")
 	fmt.Println(e.Format())
 }
 
 func (e Trace) Printc() {
-	fmt.Println("-------------- errors --------------")	
+	fmt.Println("-------------- Trace --------------")
 	fmt.Println(e.Formatc())
 }
 
 func (trace Trace) ToErr() error {
 	var err_str string
 	if len(trace.Errors) > 0 {
-		for _, er := range(trace.Errors) {
+		for _, er := range trace.Errors {
 			if er != nil {
 				if er.Error != nil {
-					err_str = err_str+er.Error.Error()
+					err_str = err_str + er.Error.Error()
 				}
 			}
 		}
@@ -126,6 +126,13 @@ func (trace Trace) ToErr() error {
 func (trace Trace) Error() string {
 	ft := trace.Format()
 	return ft
+}
+
+func (trace Trace) Fatal(from string) {
+	msg := skittles.BoldRed("Fatal error") + " from " + skittles.BoldWhite(from)
+	fmt.Println(msg)
+	trace.Printc()
+	os.Exit(1)
 }
 
 func New(from string, err error) *Trace {
@@ -168,37 +175,37 @@ func Stack(from string, err error, previous_traces ...*Trace) *Trace {
 }
 
 func Fatal(from string, trace *Trace) {
-	msg := skittles.BoldRed("Fatal error")+" from "+skittles.BoldWhite(from)
+	msg := skittles.BoldRed("Fatal error") + " from " + skittles.BoldWhite(from)
 	fmt.Println(msg)
 	trace.Printc()
 	os.Exit(1)
 }
 
 func Ok(msg string) string {
-	msg = "["+skittles.Green("ok")+"] "+msg
+	msg = "[" + skittles.Green("ok") + "] " + msg
 	return msg
 }
 
 func Debug(args ...interface{}) {
 	num_args := len(args)
-	if num_args < 1  {
+	if num_args < 1 {
 		return
 	}
 	t := fmt.Sprintf("%T", args[0])
 	objs := args
 	if t == "string" {
-		msg := "["+skittles.Yellow("debug")+"] "+args[0].(string)
+		msg := "[" + skittles.Yellow("debug") + "] " + args[0].(string)
 		fmt.Println(msg)
 	} else {
 		objs = args[1:]
 	}
-	for _, o := range(objs) {
-		fmt.Println(fmt.Sprintf("%T %#v", o, o))		
+	for _, o := range objs {
+		fmt.Println(fmt.Sprintf("%T %#v", o, o))
 	}
 }
 
 func Err(msg string) error {
-	msg = "["+skittles.BoldRed("error")+"] "+msg
+	msg = "[" + skittles.Red("error") + "] " + msg
 	err := errors.New(msg)
 	return err
 }
@@ -209,10 +216,10 @@ func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Tr
 	var new_errors []*Terr
 	new_errors = append(new_errors, er)
 	if len(previous_traces) > 0 {
-		for _, trace := range(previous_traces) {
+		for _, trace := range previous_traces {
 			if trace != nil {
 				if len(trace.Errors) > 0 {
-					for _, err := range(trace.Errors) {
+					for _, err := range trace.Errors {
 						new_errors = append(new_errors, err)
 					}
 				}
@@ -231,32 +238,31 @@ func reverse(array []*Terr) []*Terr {
 	return new
 }
 
-
 func getLabel(er *Terr) string {
-	label := "["+skittles.Red("error")+"]"
+	label := "[" + skittles.Red("error") + "]"
 	if er.Level == "critical" {
-		label = "["+skittles.BoldRed("critical")+"]"
+		label = "[" + skittles.BoldRed("critical") + "]"
 	} else if er.Level == "minor" {
 		label = "[minor error]"
 	} else if er.Level == "debug" {
-		label = "["+skittles.Yellow("debug")+"]"
+		label = "[" + skittles.Yellow("debug") + "]"
 	} else if er.Level == "important" {
-		label = "["+skittles.BoldGreen("important")+"]"
+		label = "[" + skittles.BoldGreen("important") + "]"
 	}
 	return label
 }
 
 func getLabelWithNum(er *Terr, i int) string {
 	s := strconv.Itoa(i)
-	label := "["+skittles.Red("error")+" "+s+"]"
+	label := "[" + skittles.Red("error") + " " + s + "]"
 	if er.Level == "critical" {
-		label = "["+skittles.BoldRed("critical")+" "+s+"]"
+		label = "[" + skittles.BoldRed("critical") + " " + s + "]"
 	} else if er.Level == "minor" {
 		label = "[minor error]"
 	} else if er.Level == "debug" {
-		label = "["+skittles.Yellow("debug")+" "+s+"]"
+		label = "[" + skittles.Yellow("debug") + " " + s + "]"
 	} else if er.Level == "important" {
-		label = "["+skittles.BoldGreen("important")+" "+s+"]"
+		label = "[" + skittles.BoldGreen("important") + " " + s + "]"
 	}
 	return label
 }
