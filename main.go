@@ -15,6 +15,10 @@ type Terr struct {
 	Level string
 }
 
+type Trace struct {
+	Errors []*Terr
+}
+
 func (e Terr) Format(args ...string) string {
 	prefix := ""
 	emphasis := "false"
@@ -36,10 +40,6 @@ func (e Terr) Format(args ...string) string {
 	}
 	msg = from + sep + msg
 	return msg
-}
-
-type Trace struct {
-	Errors []*Terr
 }
 
 func (trace Trace) Format(args ...string) string {
@@ -181,9 +181,9 @@ func Fatal(from string, trace *Trace) {
 	os.Exit(1)
 }
 
-func Ok(msg string) string {
+func Ok(msg string) {
 	msg = "[" + skittles.Green("ok") + "] " + msg
-	return msg
+	fmt.Println(msg)
 }
 
 func Debug(args ...interface{}) {
@@ -230,14 +230,6 @@ func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Tr
 	return new_trace
 }
 
-func reverse(array []*Terr) []*Terr {
-	var new []*Terr
-	for i := len(array) - 1; i >= 0; i-- {
-		new = append(new, array[i])
-	}
-	return new
-}
-
 func getLabel(er *Terr) string {
 	label := "[" + skittles.Red("error") + "]"
 	if er.Level == "critical" {
@@ -265,4 +257,12 @@ func getLabelWithNum(er *Terr, i int) string {
 		label = "[" + skittles.BoldGreen("important") + " " + s + "]"
 	}
 	return label
+}
+
+func reverse(array []*Terr) []*Terr {
+	var new []*Terr
+	for i := len(array) - 1; i >= 0; i-- {
+		new = append(new, array[i])
+	}
+	return new
 }
