@@ -135,37 +135,41 @@ func (trace Trace) Fatal(from string) {
 	os.Exit(1)
 }
 
-func New(from string, err error) *Trace {
+func New(from string, err error, level ...string) *Trace {
+	lvl := ""
+	if len(level) > 0 {
+		lvl = level[0]
+	}
 	from = skittles.BoldWhite(from)
-	er := &Terr{from, err, ""}
+	er := &Terr{from, err, lvl}
 	var prev *Trace
-	t := newFromErr(er, from, err, prev)
+	t := newFromErr(er, from, err, lvl, prev)
 	return t
 }
 
 func Add(from string, err error, previous_traces ...*Trace) *Trace {
 	er := &Terr{from, err, ""}
-	t := newFromErr(er, from, err, previous_traces...)
+	t := newFromErr(er, from, err, "", previous_traces...)
 	return t
 }
 
 func Pass(from string, previous_traces ...*Trace) *Trace {
 	var err error
 	er := &Terr{from, err, ""}
-	t := newFromErr(er, from, err, previous_traces...)
+	t := newFromErr(er, from, err, "", previous_traces...)
 	return t
 }
 
 func Push(from string, err error, previous_traces ...*Trace) *Trace {
 	er := &Terr{from, err, ""}
-	t := newFromErr(er, from, err, previous_traces...)
+	t := newFromErr(er, from, err, "", previous_traces...)
 	fmt.Println(er.Format())
 	return t
 }
 
 func Stack(from string, err error, previous_traces ...*Trace) *Trace {
 	er := &Terr{from, err, ""}
-	t := newFromErr(er, from, err, previous_traces...)
+	t := newFromErr(er, from, err, "", previous_traces...)
 	fmt.Println(getLabel(er), er.Format())
 	var stack [4096]byte
 	runtime.Stack(stack[:], false)
@@ -212,9 +216,9 @@ func Err(msg string) error {
 
 // internal methods
 
-func newFromErr(er *Terr, from string, err error, previous_traces ...*Trace) *Trace {
+func newFromErr(tr *Terr, from string, err error, level string, previous_traces ...*Trace) *Trace {
 	var new_errors []*Terr
-	new_errors = append(new_errors, er)
+	new_errors = append(new_errors, tr)
 	if len(previous_traces) > 0 {
 		for _, trace := range previous_traces {
 			if trace != nil {
