@@ -125,8 +125,12 @@ func (trace Trace) Error() string {
 	return ft
 }
 
-func (trace Trace) Fatal(from string) {
-	msg := skittles.BoldRed("Fatal error") + " from " + skittles.BoldWhite(from)
+func (trace Trace) Fatal(from ...string) {
+	fr := ""
+	if len(from) > 0 {
+		fr = from[0]
+	}
+	msg := skittles.BoldRed("Fatal error") + " from " + skittles.BoldWhite(fr)
 	fmt.Println(msg)
 	trace.Printc()
 	os.Exit(1)
