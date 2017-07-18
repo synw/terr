@@ -94,17 +94,14 @@ func (e Trace) Printps(suffix string, prefix string) {
 }
 
 func (e Trace) Printf(from string) {
-	fmt.Println("-------------- Trace (" + from + ") --------------")
 	fmt.Println(e.Format())
 }
 
 func (e Trace) Print() {
-	fmt.Println("-------------- Trace --------------")
 	fmt.Println(e.Format())
 }
 
 func (e Trace) Printc() {
-	fmt.Println("-------------- Trace --------------")
 	fmt.Println(e.Formatc())
 }
 
