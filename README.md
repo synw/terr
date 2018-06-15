@@ -1,6 +1,6 @@
 # Traced errors
 
-Error tracing library
+Errors tracing library
 
 ## Api
 
