@@ -2,85 +2,69 @@
 
 Error tracing library
 
-## Usage
+## Api
+
+**New** (from *string*, errMsg *string*, level *...string*) *Trace : create a trace 
+from an error message string
 
    ```go
-package main
-
-import (
-	"errors"
-	"github.com/synw/terr"
-)
-
-func f2() *terr.Trace {
-	err := errors.New("error from f2")
-	newerr := terr.Debug("f2", err)
-	return newerr
-}
-
-func f1() *terr.Trace {
-	err := errors.New("error from f1")
-	perr := f2()
-	newerr := terr.New("f1", err, perr)
-	return newerr
-}
-
-func main() {
-	err := f1()
-	if err != nil {
-		err.Print()
-	}
-}
-```
-
-Start tracing errors:
-
-   ```go
-// terr.New(from string, err error)
-trace := terr.New("function_path", err)
-return trace
-//return a *terr.Trace instead of an error
-   ```
-
-Continue tracing:
-
-   ```go
-// trace is the previous returned *terr.Trace
-terr.Add("function_path", err, trace)
-// pass the trace without adding a new error
-terr.Pass("function_path", trace)
-   ```
-
-## Options
-
-   ```go
-terr.Critical("function_path", err)
-terr.Minor("function_path", err)
-terr.Debug("function_path", err)
+   func myfunc() *terr.Trace {
+      tr := terr.New("myfunc", "Error one")
+      return tr
+   }
    ```
    
-Print the errors as they come:
+**Trace.Add** (from *string*, errMsg *string*, level *...string*) *Trace : adds to a trace 
+from an error message string
 
    ```go
-terr.Push("function_path", err, previous_trace)
-// print the go stack trace as well
-terr.Stack("function_path", err, previous_trace)
+   func myfunc2() *terr.Trace {
+      tr := myfunc()
+      tr := tr.Add("myfunc2", "Error two", "warning")
+      return tr
+   }
    ```
+   
+**Trace.Check**: prints the trace if some errors are present
 
-## Formating
-
-Custom formating:
    ```go
-// trace is a *terr.Trace
-trace.Print()
-// with colors
-trace.Printc()
-// with prefix and suffix trace.Printps(prefix, suffix)
-trace.Printps("->", "\n")
-// get the trace output without printing
-formated_trace := trace.Format()
-// with error class labels
-formated_trace := trace.Formatl()
+   tr := myfunc2()
+   tr.Check()
    ```
+   
+**Trace.Err**: returns the trace as a standard error
+
+   ```go
+   tr := myfunc2()
+   err := tr.Err()
+   ```
+   
+**Trace.Stack** (from *string*, errMsg *string*, level *...string*): 
+same as Trace.Add but adds the stack trace message of the error in the message 
+
+   ```go
+   func myfunc3() *terr.Trace {
+      tr := myfunc2()
+      tr := tr.Stack("myfunc3", "Error two", "debug")
+      return tr
+   }
+   ```
+   
+**Trace.Fatal** (from *string*, errMsg *string*): 
+same as Trace.Stack and exits the program 
+
+   ```go
+   func myfunc4() *terr.Trace {
+      tr := myfunc3()
+      tr := tr.Fatal("myfunc4", "Error two")
+      return tr
+   }
+   ```
+   
+### Error levels
+
+error (default), minor, warning, debug, fatal
+
+### Examples 
    
 Check the [examples](https://github.com/synw/terr/tree/master/example)
