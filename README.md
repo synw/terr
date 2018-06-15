@@ -2,6 +2,22 @@
 
 Errors tracing library
 
+## Data structure
+
+   ```go
+   type Terr struct {
+      From  string
+      Level string
+	  Error error
+	  File  string
+	  Line  int
+   }
+
+   type Trace struct {
+	  Errors []*Terr
+   }
+   ```
+
 ## Api
 
 **New** (from *string*, errMsg *string*, level *...string*) *Trace : create a trace 
