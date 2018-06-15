@@ -73,7 +73,7 @@ func (trace Trace) Print() {
 }
 
 // returns the trace as a standard error
-func (trace Trace) ToErr() error {
+func (trace Trace) Err() error {
 	var msg string
 	trs := reverse(trace.Errors)
 	if len(trs) > 0 {

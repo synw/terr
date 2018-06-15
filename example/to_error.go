@@ -18,6 +18,6 @@ func f2() *terr.Trace {
 
 func main() {
 	tr := f2()
-	err := tr.ToErr()
+	err := tr.Err()
 	fmt.Println(err)
 }
