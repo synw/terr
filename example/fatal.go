@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/synw/terr"
 )
 
@@ -9,13 +10,12 @@ func f1() *terr.Trace {
 	return tr
 }
 
-func f2() *terr.Trace {
+func f2() {
 	tr := f1()
-	tr = tr.Stack("f2", "Second error")
-	return tr
+	tr.Fatal("f2", "Second error")
 }
 
 func main() {
-	tr := f2()
-	tr.Check()
+	f2()
+	fmt.Println("I am not supposed to be printed: the program has stopped")
 }
