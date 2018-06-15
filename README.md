@@ -112,6 +112,6 @@ Check the [examples](https://github.com/synw/terr/tree/master/example)
 Output:
    
    ```
-   [error 0] Second error from f2 line 14 in /home/ggg/ggg/terr/example/simple.go
-   [error 1] First error from f1 line 8 in /home/ggg/ggg/terr/example/simple.go
+   [error 0] Second error from f2 line 14 in /home/me/terr/example/simple.go
+   [error 1] First error from f1 line 8 in /home/me/terr/example/simple.go
    ```
