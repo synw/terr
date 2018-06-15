@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/synw/terr"
 )
 
@@ -17,5 +18,6 @@ func f2() *terr.Trace {
 
 func main() {
 	tr := f2()
-	tr.Check()
+	err := tr.ToErr()
+	fmt.Println(err)
 }
