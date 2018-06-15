@@ -1,6 +1,6 @@
 # Traced errors
 
-Errors tracing library
+Propagate detailled errors up the call stack
 
 ## Data structure
 
