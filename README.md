@@ -84,3 +84,34 @@ error (default), minor, warning, debug, fatal
 ### Examples 
    
 Check the [examples](https://github.com/synw/terr/tree/master/example)
+
+   ```go
+   package main
+
+   import (
+	  "github.com/synw/terr"
+   )
+
+   func f1() *terr.Trace {
+	  tr := terr.New("f1", "First error")
+	  return tr
+   }
+
+   func f2() *terr.Trace {
+	  tr := f1()
+	  tr = tr.Add("f2", "Second error")
+	  return tr
+   }
+
+   func main() {
+	  tr := f2()
+	  tr.Check()
+   }
+   ```
+   
+Output:
+   
+   ```
+   [error 0] Second error from f2 line 14 in /home/ggg/ggg/terr/example/simple.go
+   [error 1] First error from f1 line 8 in /home/ggg/ggg/terr/example/simple.go
+   ```
