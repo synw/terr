@@ -11,7 +11,7 @@ func f0() *terr.Trace {
 
 func f1() *terr.Trace {
 	tr := f0()
-	tr = tr.Add("f1", "First error", "warn")
+	tr = tr.Add("f1", "First error", "warning")
 	return tr
 }
 
@@ -23,11 +23,17 @@ func f2() *terr.Trace {
 
 func f3() *terr.Trace {
 	tr := f2()
-	tr = tr.Add("f3", "Third error", "important")
+	tr = tr.Add("f3", "Third error", "minor")
+	return tr
+}
+
+func f4() *terr.Trace {
+	tr := f2()
+	tr = tr.Add("f3", "Third error", "fatal")
 	return tr
 }
 
 func main() {
-	tr := f3()
+	tr := f4()
 	tr.Check()
 }

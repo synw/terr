@@ -138,15 +138,15 @@ func Debug(args ...interface{}) {
 // get the colored label and error number
 func getLabelWithNum(tr *Terr, i int) string {
 	s := strconv.Itoa(i)
-	label := "[" + skittles.Red("error") + " " + s + "]"
+	label := "[" + skittles.Red(tr.Level) + " " + s + "]"
 	if tr.Level == "fatal" {
-		label = "[" + skittles.BoldRed("fatal") + " " + s + "]"
-	} else if tr.Level == "warn" {
-		label = "[" + skittles.Magenta("warn") + " " + s + "]"
+		label = "[" + skittles.BoldRed(tr.Level) + " " + s + "]"
+	} else if tr.Level == "warning" {
+		label = "[" + skittles.Magenta(tr.Level) + " " + s + "]"
 	} else if tr.Level == "debug" {
-		label = "[" + skittles.Yellow("debug") + " " + s + "]"
-	} else if tr.Level == "important" {
-		label = "[" + skittles.BoldGreen("important") + " " + s + "]"
+		label = "[" + skittles.Yellow(tr.Level) + " " + s + "]"
+	} else if tr.Level == "minor" {
+		label = "[" + skittles.Green(tr.Level) + " " + s + "]"
 	}
 	return label
 }
