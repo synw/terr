@@ -59,6 +59,19 @@ func (trace Trace) Add(from string, errMsg string, level ...string) *Trace {
 	return &trace
 }
 
+// add a new error to the trace with no message
+func (trace Trace) Pass(from string, level ...string) *Trace {
+	lvl := "error"
+	if len(level) > 0 {
+		lvl = level[0]
+	}
+	err := errors.New("")
+	_, file, line, _ := runtime.Caller(1)
+	ter := &Terr{from, lvl, err, file, line}
+	trace.Errors = append(trace.Errors, ter)
+	return &trace
+}
+
 // prints the trace if some errors are found
 func (trace Trace) Check() {
 	if len(trace.Errors) > 0 {
