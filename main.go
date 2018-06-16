@@ -81,6 +81,11 @@ func (trace Trace) Print() {
 	fmt.Println(msg)
 }
 
+// error method
+func (trace Trace) Error() {
+	return trace.Err().Error()
+}
+
 // returns the trace as a standard error
 func (trace Trace) Err() error {
 	var msg string
