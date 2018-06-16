@@ -20,29 +20,29 @@ Propagate detailled errors up the call stack
 
 ## Api
 
-**New** (from *string*, errMsg *string*, level *...string*) *Trace : create a trace 
+**New** (errObj *interface{}*, level *...string*) *Trace : create a trace 
 from an error or a string
 
    ```go
    func myfunc() *terr.Trace {
-      tr := terr.New("myfunc", "Error one")
+      tr := terr.New("Error one")
       return tr
    }
    
    func myfunc_() *terr.Trace {
       err := errors.New("Error one")
-      tr := terr.New("myfunc", err)
+      tr := terr.New(err)
       return tr
    }
    ```
    
-**Trace.Add** (from *string*, errMsg *string*, level *...string*) *Trace : adds to a trace 
+**Trace.Add** (errObj *interface{}*, level *...string*) *Trace : adds to a trace 
 from an error message string
 
    ```go
    func myfunc2() *terr.Trace {
       tr := myfunc()
-      tr := tr.Add("myfunc2", "Error two", "warning")
+      tr := tr.Add("Error two", "warning")
       return tr
    }
    ```
@@ -75,13 +75,13 @@ from an error message string
    tr.Print()
    ```
    
-**Trace.Stack** (from *string*, errMsg *string*, level *...string*): 
+**Trace.Stack** (errObj *interface{}*, level *...string*): 
 same as Trace.Add but adds the stack trace message of the error in the message 
 
    ```go
    func myfunc3() *terr.Trace {
       tr := myfunc2()
-      tr := tr.Stack("myfunc3", "Error two", "debug")
+      tr := tr.Stack("Error two", "debug")
       return tr
    }
    ```
@@ -92,14 +92,14 @@ same as Trace.Stack and exits the program
    ```go
    func myfunc4() *terr.Trace {
       tr := myfunc3()
-      tr := tr.Fatal("myfunc4", "Error two")
+      tr := tr.Fatal("Error two")
       return tr
    }
    ```
    
 ### Error levels
 
-error (default), minor, warning, debug, fatal
+debug, info, warning, error (default), fatal, panic
 
 ### Examples 
    
@@ -109,17 +109,19 @@ Check the [examples](https://github.com/synw/terr/tree/master/example)
    package main
 
    import (
+      "errors"
 	  "github.com/synw/terr"
    )
 
    func f1() *terr.Trace {
-	  tr := terr.New("f1", "First error")
+	  tr := terr.New("First error")
 	  return tr
    }
 
    func f2() *terr.Trace {
 	  tr := f1()
-	  tr = tr.Add("f2", "Second error")
+	  err := errors.New("Second error")
+	  tr = tr.Add(err)
 	  return tr
    }
 
@@ -132,6 +134,6 @@ Check the [examples](https://github.com/synw/terr/tree/master/example)
 Output:
    
    ```
-   [error 0] Second error from f2 line 14 in /home/me/terr/example/simple.go
-   [error 1] First error from f1 line 8 in /home/me/terr/example/simple.go
+   0 [error ] Second error from main.f2 line 18 in /home/me/terr/example/simple.go
+   1 [error ] First error from main.f1 line 11 in /home/me/terr/example/simple.go
    ```

@@ -22,7 +22,7 @@ type Trace struct {
 }
 
 // constructor
-func New(from string, errObj interface{}, level ...string) *Trace {
+func New(errObj interface{}, level ...string) *Trace {
 	var err error
 	err, found := errObj.(error)
 	if found == false {
@@ -37,7 +37,14 @@ func New(from string, errObj interface{}, level ...string) *Trace {
 	if len(level) > 0 {
 		lvl = level[0]
 	}
-	_, file, line, _ := runtime.Caller(1)
+
+	pc := make([]uintptr, 10)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	from := f.Name()
+
+	//_, file, line, _ := runtime.Caller(1)
 	ter := &Terr{from, lvl, err, file, line}
 	ters := []*Terr{ter}
 	tr := Trace{ters}
@@ -47,13 +54,30 @@ func New(from string, errObj interface{}, level ...string) *Trace {
 // ------------------- Methods -------------------
 
 // add a new error to the trace
-func (trace Trace) Add(from string, errMsg string, level ...string) *Trace {
+func (trace Trace) Add(errObj interface{}, level ...string) *Trace {
+	var err error
+	err, found := errObj.(error)
+	if found == false {
+		errMsg, found := errObj.(string)
+		if found == true {
+			err = errors.New(errMsg)
+		} else {
+			panic("The second parameter must be a string or an error")
+		}
+	}
+
 	lvl := "error"
 	if len(level) > 0 {
 		lvl = level[0]
 	}
-	err := errors.New(errMsg)
-	_, file, line, _ := runtime.Caller(1)
+
+	pc := make([]uintptr, 10)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	from := f.Name()
+
+	//_, file, line, _ := runtime.Caller(1)
 	ter := &Terr{from, lvl, err, file, line}
 	trace.Errors = append(trace.Errors, ter)
 	return &trace
@@ -66,7 +90,14 @@ func (trace Trace) Pass(from string, level ...string) *Trace {
 		lvl = level[0]
 	}
 	err := errors.New("")
-	_, file, line, _ := runtime.Caller(1)
+
+	pc := make([]uintptr, 10)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	from = f.Name()
+
+	//_, file, line, _ := runtime.Caller(1)
 	ter := &Terr{from, lvl, err, file, line}
 	trace.Errors = append(trace.Errors, ter)
 	return &trace
@@ -132,25 +163,67 @@ func (trace Trace) Err() error {
 }
 
 // same as Add but the error message will contain the stack trace
-func (trace Trace) Stack(from string, errMsg string, level ...string) *Trace {
+func (trace Trace) Stack(errObj interface{}, level ...string) *Trace {
+	var err error
+	err, found := errObj.(error)
+	if found == false {
+		errMsg, found := errObj.(string)
+		if found == true {
+			err = errors.New(errMsg)
+		} else {
+			panic("The second parameter must be a string or an error")
+		}
+	}
+
 	lvl := "error"
 	if len(level) > 0 {
 		lvl = level[0]
 	}
-	_, file, line, _ := runtime.Caller(1)
+
+	pc := make([]uintptr, 10)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	from := f.Name()
+
+	//_, file, line, _ := runtime.Caller(1)
 	var stack [4096]byte
 	runtime.Stack(stack[:], false)
 	st := fmt.Sprintf("%s\n", stack[:])
-	err := errors.New(errMsg + "\n" + st)
+	err = errors.New(err.Error() + "\n" + st)
 	ter := &Terr{from, lvl, err, file, line}
 	trace.Errors = append(trace.Errors, ter)
 	return &trace
 }
 
 // same as Stack but stops the program
-func (trace Trace) Fatal(from string, errMsg string) {
-	tr := trace.Stack(from, errMsg, "fatal")
-	tr.Print()
+func (trace Trace) Fatal(errObj interface{}) {
+	var err error
+	err, found := errObj.(error)
+	if found == false {
+		errMsg, found := errObj.(string)
+		if found == true {
+			err = errors.New(errMsg)
+		} else {
+			panic("The second parameter must be a string or an error")
+		}
+	}
+
+	lvl := "fatal"
+	pc := make([]uintptr, 10)
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	from := f.Name()
+
+	//_, file, line, _ := runtime.Caller(1)
+	var stack [4096]byte
+	runtime.Stack(stack[:], false)
+	st := fmt.Sprintf("%s\n", stack[:])
+	err = errors.New(err.Error() + "\n" + st)
+	ter := &Terr{from, lvl, err, file, line}
+	trace.Errors = append(trace.Errors, ter)
+	trace.Print()
 	os.Exit(1)
 }
 
@@ -171,15 +244,19 @@ func Debug(args ...interface{}) {
 // get the colored label and error number
 func getLabelWithNum(tr *Terr, i int) string {
 	s := strconv.Itoa(i)
-	label := "[" + skittles.Red(tr.Level) + " " + s + "]"
-	if tr.Level == "fatal" {
-		label = "[" + skittles.BoldRed(tr.Level) + " " + s + "]"
+	label := s + " [" + skittles.Red(tr.Level) + "]"
+	if tr.Level == "debug" {
+		label = s + " [" + skittles.Yellow(tr.Level) + "]"
+	} else if tr.Level == "info" {
+		label = s + " [" + skittles.Green(tr.Level) + "]"
 	} else if tr.Level == "warning" {
-		label = "[" + skittles.Magenta(tr.Level) + " " + s + "]"
-	} else if tr.Level == "debug" {
-		label = "[" + skittles.Yellow(tr.Level) + " " + s + "]"
-	} else if tr.Level == "minor" {
-		label = "[" + skittles.Green(tr.Level) + " " + s + "]"
+		label = s + " [" + skittles.Magenta(tr.Level) + "]"
+	} else if tr.Level == "error" {
+		label = s + " [" + skittles.Red(tr.Level) + "]"
+	} else if tr.Level == "fatal" {
+		label = s + " [" + skittles.BoldRed(tr.Level) + "]"
+	} else if tr.Level == "panic" {
+		label = s + " [" + skittles.BoldRed(tr.Level) + "]"
 	}
 	return label
 }

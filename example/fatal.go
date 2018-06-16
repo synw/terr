@@ -6,13 +6,13 @@ import (
 )
 
 func f1() *terr.Trace {
-	tr := terr.New("f1", "First error")
+	tr := terr.New("First error")
 	return tr
 }
 
 func f2() {
 	tr := f1()
-	tr.Fatal("f2", "Second error")
+	tr.Fatal("Second error")
 }
 
 func main() {
