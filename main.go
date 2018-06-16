@@ -22,12 +22,21 @@ type Trace struct {
 }
 
 // constructor
-func New(from string, errMsg string, level ...string) *Trace {
+func New(from string, errObj interface{}, level ...string) *Trace {
+	var err error
+	err, found := errObj.(error)
+	if found == false {
+		errMsg, found := errObj.(string)
+		if found == true {
+			err = errors.New(errMsg)
+		} else {
+			panic("The second parameter must be a string or an error")
+		}
+	}
 	lvl := "error"
 	if len(level) > 0 {
 		lvl = level[0]
 	}
-	err := errors.New(errMsg)
 	_, file, line, _ := runtime.Caller(1)
 	ter := &Terr{from, lvl, err, file, line}
 	ters := []*Terr{ter}
