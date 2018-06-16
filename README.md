@@ -61,6 +61,20 @@ from an error message string
    err := tr.Err()
    ```
    
+**Trace.Msg**: returns the trace's coloured error message
+
+   ```go
+   tr := myfunc2()
+   fmt.Println(tr.Msg())
+   ```
+   
+**Trace.Print**: print the trace's coloured error message
+
+   ```go
+   tr := myfunc2()
+   tr.Print()
+   ```
+   
 **Trace.Stack** (from *string*, errMsg *string*, level *...string*): 
 same as Trace.Add but adds the stack trace message of the error in the message 
 
