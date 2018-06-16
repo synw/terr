@@ -68,6 +68,12 @@ func (trace Trace) Check() {
 
 // print the trace
 func (trace Trace) Print() {
+	msg := trace.Msg()
+	fmt.Println(msg)
+}
+
+// get the coloured error message from the trace
+func (trace Trace) Msg() string {
 	var msg string
 	trs := reverse(trace.Errors)
 	for i, tr := range trs {
@@ -78,10 +84,10 @@ func (trace Trace) Print() {
 			msg = msg + "\n"
 		}
 	}
-	fmt.Println(msg)
+	return msg
 }
 
-// error method
+// get the error message from the trace
 func (trace Trace) Error() string {
 	return trace.Err().Error()
 }
