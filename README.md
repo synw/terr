@@ -21,11 +21,17 @@ Propagate detailled errors up the call stack
 ## Api
 
 **New** (from *string*, errMsg *string*, level *...string*) *Trace : create a trace 
-from an error message string
+from an error or a string
 
    ```go
    func myfunc() *terr.Trace {
       tr := terr.New("myfunc", "Error one")
+      return tr
+   }
+   
+   func myfunc_() *terr.Trace {
+      err := errors.New("Error one")
+      tr := terr.New("myfunc", err)
       return tr
    }
    ```
