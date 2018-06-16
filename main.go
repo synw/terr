@@ -84,7 +84,7 @@ func (trace Trace) Add(errObj interface{}, level ...string) *Trace {
 }
 
 // add a new error to the trace with no message
-func (trace Trace) Pass(from string, level ...string) *Trace {
+func (trace Trace) Pass(level ...string) *Trace {
 	lvl := "error"
 	if len(level) > 0 {
 		lvl = level[0]
