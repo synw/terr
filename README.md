@@ -86,7 +86,7 @@ same as Trace.Add but adds the stack trace message of the error in the message
    }
    ```
    
-**Trace.Fatal** (from *string*, errMsg *string*): 
+**Trace.Fatal** (errObj *interface{}*, level *...string*): 
 same as Trace.Stack and exits the program 
 
    ```go
