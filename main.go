@@ -82,7 +82,7 @@ func (trace Trace) Print() {
 }
 
 // error method
-func (trace Trace) Error() {
+func (trace Trace) Error() string {
 	return trace.Err().Error()
 }
 
