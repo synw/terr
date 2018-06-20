@@ -24,12 +24,12 @@ Propagate detailled errors up the call stack
 from an error or a string
 
    ```go
-   func myfunc() *terr.Trace {
+   func foo() *terr.Trace {
       tr := terr.New("Error one")
       return tr
    }
    
-   func myfunc_() *terr.Trace {
+   func bar() *terr.Trace {
       err := errors.New("Error one")
       tr := terr.New(err)
       return tr
@@ -47,6 +47,14 @@ from an error message string
    }
    ```
    
+**Trace.Pass** (level *...string*) : adds a trace with no new error message: it just records
+the function call
+
+   ```go
+   tr := myfunc2()
+   tr = tr.Pass()
+   ```
+   
 **Trace.Check**: prints the trace if some errors are present
 
    ```go
@@ -54,7 +62,7 @@ from an error message string
    tr.Check()
    ```
    
-**Trace.Err**: returns the trace as a standard error
+**Trace.Err**: returns the full trace as a standard error
 
    ```go
    tr := myfunc2()
@@ -73,6 +81,13 @@ from an error message string
    ```go
    tr := myfunc2()
    tr.Print()
+   ```
+   
+**Trace.Log** () string: returns the last error message of the trace 
+
+   ```go
+   tr := myfunc2()
+   tr.Log()
    ```
    
 **Trace.Stack** (errObj *interface{}*, level *...string*): 
