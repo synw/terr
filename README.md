@@ -47,7 +47,7 @@ from an error message string
    }
    ```
    
-**Trace.Pass** (level *...string*) : adds a trace with no new error message: it just records
+**Trace.Pass** (level *...string*) *Trace : adds a trace with no new error message: it just records
 the function call
 
    ```go
@@ -62,18 +62,11 @@ the function call
    tr.Check()
    ```
    
-**Trace.Err**: returns the full trace as a standard error
+**Trace.Err** () error: returns the full trace as a standard error
 
    ```go
    tr := myfunc2()
    err := tr.Err()
-   ```
-   
-**Trace.Msg**: returns the trace's coloured error message
-
-   ```go
-   tr := myfunc2()
-   fmt.Println(tr.Msg())
    ```
    
 **Trace.Print**: print the trace's coloured error message
@@ -81,6 +74,13 @@ the function call
    ```go
    tr := myfunc2()
    tr.Print()
+   ```
+   
+**Trace.Msg** () string: returns the trace's coloured error message
+
+   ```go
+   tr := myfunc2()
+   fmt.Println(tr.Msg())
    ```
    
 **Trace.Log** () string: returns the last error message of the trace 
