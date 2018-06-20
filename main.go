@@ -95,12 +95,23 @@ func (trace Trace) Pass(level ...string) *Trace {
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
 	file, line := f.FileLine(pc[0])
-	from = f.Name()
+	from := f.Name()
 
 	//_, file, line, _ := runtime.Caller(1)
 	ter := &Terr{from, lvl, err, file, line}
 	trace.Errors = append(trace.Errors, ter)
 	return &trace
+}
+
+// returns the last error message with no line number
+// and file information
+func (trace Trace) Log() string {
+	msg := ""
+	trs := reverse(trace.Errors)
+	if len(trs) > 0 {
+		msg = trace.Errors[0].Error.Error()
+	}
+	return msg
 }
 
 // prints the trace if some errors are found
